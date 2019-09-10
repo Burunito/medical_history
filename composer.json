@@ -56,7 +56,6 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
-            "php artisan optimize",
             "chmod -R 777 public/"
         ]
     },
