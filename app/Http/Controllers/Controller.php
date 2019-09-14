@@ -13,10 +13,10 @@ class Controller extends BaseController
 
     function __construct($modelo = false ){
     		if($modelo){
-	        $this->middleware('permission:READ-'.$modelo)->only(['show','index', 'all', 'filter']);
-	        $this->middleware('permission:EDIT-'.$modelo)->only(['edit','update']);
-	        $this->middleware('permission:DELETE-'.$modelo)->only(['destroy','recover']);
-	        $this->middleware('permission:ADD-'.$modelo)->only(['create','store']);
+	        $this->middleware('permission:Mostrar-'.$modelo)->only(['show','index', 'all', 'filter']);
+	        $this->middleware('permission:Eliminar-'.$modelo)->only(['destroy','recover']);
+	        $this->middleware('permission:Agregar-'.$modelo)->only(['create','store']);
+	        $this->middleware('permission:Actualizar-'.$modelo)->only(['create','store']);
     		}
    }
 }

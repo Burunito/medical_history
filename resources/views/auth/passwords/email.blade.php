@@ -19,12 +19,12 @@
                                 <i class="tim-icons icon-email-85"></i>
                             </div>
                         </div>
-                        <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ _('Email') }}">
+                        <input type="email" name="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ _('Correo') }}">
                         @include('alerts.feedback', ['field' => 'email'])
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3">{{ _('Send Password Reset Link') }}</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block mb-3">{{ _('Send Contraseña Reset Link') }}</button>
                 </div>
             </div>
         </form>

@@ -6,6 +6,7 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use DB;
 
 class User extends Authenticatable
 {
@@ -24,5 +25,16 @@ class User extends Authenticatable
     public function rol()
     {
         return $this->belongsTo('App\Models\Role', 'role_id');
+    }
+
+    public function hasPermission($permission)
+    {
+       $has_permission = DB::table('role_permission')
+                    ->join('permission','permission.id','role_permission.permission_id')
+                    ->where('role_id', $this->role_id)
+                    ->where('permission.action','=',$permission)
+                    ->first();
+
+        return $has_permission ? true : false;
     }
 }

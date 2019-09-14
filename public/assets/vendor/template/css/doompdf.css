@@ -1,0 +1,22 @@
+@page { margin: 100px 25px; }
+header {
+    position: fixed;
+    top: -60px;
+    left: 0px;
+    right: 0px;
+    height: 200px;
+}
+footer {
+    position: fixed;
+    bottom: -60px;
+    left: 0px;
+    right: 0px;
+    height: 40px;
+}
+.page-break {
+    page-break-after: always;
+}
+tr td{
+  padding: 1 !important;
+  margin: 0 !important;
+}

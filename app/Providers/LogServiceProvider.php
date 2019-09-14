@@ -31,18 +31,19 @@ class LogProvider extends ServiceProvider
     
     private function save_event($event,$data)
     {
-      $table_name = $data[0]->getTable();
-
-      $id_user = Auth::check() ? Auth::id() : null;
+        $table_name = $data[0]->getTable();
+        if($table_name == 'log')
+            return;
+        $id_user = Auth::check() ? Auth::id() : null;
        
-      $log = [
-        'user_id'     => $id_user,
-        'table'       => $table_name,
-        'action'      => $event,
-        'data'        => json_encode($data)
+        $log = [
+            'user_id'     => $id_user,
+            'table'       => $table_name,
+            'action'      => $event,
+            'data'        => json_encode($data)
         ];
 
-      Log::create($log);
+        Log::create($log);
     }
 
     /**

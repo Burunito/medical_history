@@ -11,31 +11,29 @@
 |
 */
 
-Route::get('/', function () {
-    redirect('/home');
-});
+Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
 
-Route::resource('trainer', 'TrainerController');
-Route::resource('pokemon', 'PokemonController');
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-
+//Catalogo Lotes
 Route::group(['middleware' => 'auth'], function () {
-		Route::get('icons', ['as' => 'pages.icons', 'uses' => 'PageController@icons']);
-		Route::get('maps', ['as' => 'pages.maps', 'uses' => 'PageController@maps']);
-		Route::get('notifications', ['as' => 'pages.notifications', 'uses' => 'PageController@notifications']);
-		Route::get('rtl', ['as' => 'pages.rtl', 'uses' => 'PageController@rtl']);
-		Route::get('tables', ['as' => 'pages.tables', 'uses' => 'PageController@tables']);
-		Route::get('typography', ['as' => 'pages.typography', 'uses' => 'PageController@typography']);
-		Route::get('upgrade', ['as' => 'pages.upgrade', 'uses' => 'PageController@upgrade']);
+		Route::get('lote/filter', 'LoteController@filter');
+		Route::get('lote/grid', 'LoteController@grid');
+		Route::resource('lote', 'LoteController');
 });
 
+//Permisos
 Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
+});
+
+//Users and profiles
+Route::group(['middleware' => 'auth'], function () {
+	Route::get('permission/grid', 'PermissionController@grid');
+	Route::resource('permission', 'PermissionController');
+	
+	Route::get('user/grid', 'UserController@grid');
+	Route::resource('user', 'UserController');
+	
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
