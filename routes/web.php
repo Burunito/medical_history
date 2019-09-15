@@ -11,8 +11,18 @@
 |
 */
 
-Route::get('command', function () {	
-    \Artisan::call('config:cache');
+Route::get('clearbootstrap', function () {	
+		if(file_exists('../bootstrap/cache/config.php'))
+    	unlink('../bootstrap/cache/config.php' );
+   	if(file_exists('../bootstrap/cache/packages.php'))
+    	unlink('../bootstrap/cache/packages.php' );
+    if(file_exists('../bootstrap/cache/services.php'))
+    	unlink('../bootstrap/cache/services.php' );
+});
+
+Route::get('clearcache', function () {	
+    \Artisan::call('config:clear');
+    \Artisan::call('cache:clear');
     \Artisan::call('view:clear');
 });
 
