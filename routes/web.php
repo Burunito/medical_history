@@ -11,6 +11,16 @@
 |
 */
 
+Route::get('command', function () {	
+    \Artisan::call('config:cache');
+    \Artisan::call('view:clear');
+});
+
+Route::get('migrate', function () {	
+    \Artisan::call('migrate');
+    \Artisan::call('db:seed');
+});
+
 Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
 
 Auth::routes();
