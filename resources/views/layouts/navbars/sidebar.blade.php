@@ -63,6 +63,18 @@
                     </ul>
                 </div>
                 @endif
+                @if(auth()->user()->hasPermission('Mostrar-Numero de serie'))
+                <div class="collapse show" id="serie">
+                    <ul class="nav pl-4">
+                        <li @if ($pageSlug == 'serie') class="active " @endif>
+                            <a href="{{ route('serie.index')  }}">
+                                <i class="fas fa-box"></i>
+                                <p>{{ _('Numeros de Serie') }}</p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                @endif
             </li>
         </ul>
     </div>

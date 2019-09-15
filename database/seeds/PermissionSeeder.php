@@ -31,7 +31,11 @@ class PermissionSeeder extends Seeder
         'Agregar-Lote',
         'Eliminar-Lote',
         'Actualizar-Lote',
-        'Mostrar-Lote'
+        'Mostrar-Lote',
+        'Agregar-Numero de Serie',
+        'Eliminar-Numero de Serie',
+        'Actualizar-Numero de Serie',
+        'Mostrar-Numero de Serie'
       ];
 
       $role = Role::where('name', 'admin')->first();
