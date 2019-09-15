@@ -153,7 +153,6 @@ return [
         /*
          * Application Service Providers...
          */
-        //Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\LogProvider::class,
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -215,7 +214,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        //'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
