@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Lote extends Model
+class Serie extends Model
 {
-    protected $table='lotes';
+    use SoftDeletes;
+    protected $table='series';
 
     protected $fillable = [
-        'nombre'
+        'serie',
+        'usuario_id',
+        'lote_id',
+        'fecha_caducidad'
     ];
 
     protected $hidden = [

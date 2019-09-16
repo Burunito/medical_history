@@ -54,7 +54,7 @@
                 @if(auth()->user()->hasPermission('Mostrar-Lote'))
                 <div class="collapse show" id="lotes">
                     <ul class="nav pl-4">
-                        <li @if ($pageSlug == 'Lotes') class="active " @endif>
+                        <li @if ($pageSlug == 'lotes') class="active " @endif>
                             <a href="{{ route('lote.index')  }}">
                                 <i class="fas fa-box"></i>
                                 <p>{{ _('Lotes') }}</p>
@@ -68,7 +68,7 @@
                     <ul class="nav pl-4">
                         <li @if ($pageSlug == 'serie') class="active " @endif>
                             <a href="{{ route('serie.index')  }}">
-                                <i class="fas fa-box"></i>
+                                <i class="fas fa-file-signature"></i>
                                 <p>{{ _('Numeros de Serie') }}</p>
                             </a>
                         </li>

@@ -11,12 +11,13 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    function __construct($modelo = false ){
-    		if($modelo){
-	        $this->middleware('permission:Mostrar-'.$modelo)->only(['show','index', 'all', 'filter']);
-	        $this->middleware('permission:Eliminar-'.$modelo)->only(['destroy','recover']);
-	        $this->middleware('permission:Agregar-'.$modelo)->only(['create','store']);
-	        $this->middleware('permission:Actualizar-'.$modelo)->only(['create','store']);
-    		}
+    function __construct($modelo = null){
+  		if($modelo){
+        $this->middleware('permission:Mostrar-'.$modelo)->only(['show','index', 'all', 'filter']);
+        $this->middleware('permission:Eliminar-'.$modelo)->only(['destroy']);
+        $this->middleware('permission:Recuperar-'.$modelo)->only(['restore']);
+        $this->middleware('permission:Agregar-'.$modelo)->only(['create','store']);
+        $this->middleware('permission:Actualizar-'.$modelo)->only(['update','store']);
+  		}
    }
 }

@@ -126,9 +126,9 @@ class LoteController extends Controller
      * @param  \App\Lote  $lote
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function recover(Lote  $lote)
+    public function restore(Lote  $lote)
     {
-      $lote->restore();
+      $lote->withTrashed()->restore();
 
       return response()->json(['data' => ["msg" => 'Recuperado correctamente'], 'status' => 200], 200);
     }
@@ -140,20 +140,23 @@ class LoteController extends Controller
      * @return DatatableJson
      */
     public function grid(Request $request){
-      $records = Lote::select('*');
+      $records = Lote::select('*')->orderBy('id', 'DESC');
 
-      //if($request->inactive != 1)
-          //$records = $records->withTrash();
+      if($request->inactive == 1)
+        $records = $records->withTrashed();
+      
+      if($request->nombre)
+        $records = $records->where('lotes.nombre', 'like', '%'.$request->nombre.'%');
 
       $dataTable = Datatables::of($records);
       
       return $dataTable->addColumn('actions', function($record){
-          $params = [
-              'record' => $record,
-              'url'=> 'lote', 
-              'permission' => 'Lote'
-          ];
-          return view('common.buttons', $params)->render();
+        $params = [
+          'record' => $record,
+          'url'=> 'lote', 
+          'permission' => 'Lote'
+        ];
+        return view('common.buttons', $params)->render();
       })
       ->escapeColumns([])
       ->make(true);
@@ -169,20 +172,20 @@ class LoteController extends Controller
       $records = Lote::select('*');
       $filters = $request->all();
       foreach($filters as $filter) {
-          switch ($filter->type) {
-              case 'gt':
-                  $records->where($filter->field, '>', $filter->value);
-                  break;
-              case 'lt':
-                  $records->where($filter->field, '<', $filter->value);
-                  break;
-              case 'eq':
-                  $records->where($filter->field, '=', $filter->value);
-                  break;
-              case 'like':
-                  $records->where($filter->field, 'like', '%'.$filter->value.'%');
-                  break;
-          }
+        switch ($filter->type) {
+          case 'gt':
+            $records->where($filter->field, '>', $filter->value);
+            break;
+          case 'lt':
+            $records->where($filter->field, '<', $filter->value);
+            break;
+          case 'eq':
+            $records->where($filter->field, '=', $filter->value);
+            break;
+          case 'like':
+            $records->where($filter->field, 'like', '%'.$filter->value.'%');
+            break;
+        }
       }
 
       $records = $records->get();

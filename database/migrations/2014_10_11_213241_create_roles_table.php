@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CreateRolesTable extends Migration
 {
+    use SoftDeletes;
     /**
      * Run the migrations.
      *

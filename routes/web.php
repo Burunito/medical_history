@@ -31,6 +31,9 @@ Route::get('migrate', function () {
     \Artisan::call('db:seed');
 });
 
+Route::get('/buscar', 'BuscarController@index');
+Route::post('/buscar', 'BuscarController@buscar');
+
 Route::get('/', 'HomeController@index')->name('home')->middleware('auth');
 
 Auth::routes();
@@ -39,18 +42,25 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 		Route::get('lote/filter', 'LoteController@filter');
 		Route::get('lote/grid', 'LoteController@grid');
+		Route::put('lote/{id}/restore','LoteController@restore');
 		Route::resource('lote', 'LoteController');
 });
 
-//Permisos
+//Catalogo Series
 Route::group(['middleware' => 'auth'], function () {
+		Route::get('serie/filter', 'SerieController@filter');
+		Route::get('serie/grid', 'SerieController@grid');
+		Route::put('serie/{id}/restore','SerieController@restore');
+		Route::resource('serie', 'SerieController');
 });
 
 //Users and profiles
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('permission/grid', 'PermissionController@grid');
+	Route::put('permission/{id}/restore','PermissionController@restore');
 	Route::resource('permission', 'PermissionController');
 	
+	Route::put('user/{id}/restore','UserController@restore');
 	Route::get('user/grid', 'UserController@grid');
 	Route::resource('user', 'UserController');
 	

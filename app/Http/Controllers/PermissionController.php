@@ -46,6 +46,7 @@ class PermissionController extends Controller
 
       $data = [
         'permission' => 'Rol',
+        'method' => 'create',
       	'permisos' => $permisos_grupo,
       	'url' => 'permission'
       ];
@@ -99,6 +100,7 @@ class PermissionController extends Controller
       });
       $role_permissions = $role_permissions->toArray();
       $data = [
+        'method' => 'edit',
         'permission' => 'Rol',
         'record' => $role, 
         'url' => '/permission/'.$role->id,
@@ -127,8 +129,9 @@ class PermissionController extends Controller
           $permisos_grupo[$permiso[1]] = [];
         $permisos_grupo[$permiso[1]][] = $record;
       });
-
+      $role_permissions = $role_permissions->toArray();
       $data = [
+        'method' => 'show',
         'permission' => 'Rol',
         'record' => $role, 
         'url' => '/permission/'.$role->id,
@@ -171,9 +174,10 @@ class PermissionController extends Controller
      * @param  \App\Permission  $permission
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Permission  $permission)
+    public function destroy($id)
     {
-      $permission->delete();
+      $rol = Role::find($id);
+      $rol->delete();
 
       return response()->json(['data' => ["msg" => 'Eliminado correctamente'], 'status' => 200], 200);
     }
@@ -184,9 +188,10 @@ class PermissionController extends Controller
      * @param  \App\Permission  $permission
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function recover(Permission  $permission)
+    public function restore($id)
     {
-      $permission->restore();
+      $rol = Role::withTrashed()->find($id);
+      $rol->restore();
 
       return response()->json(['data' => ["msg" => 'Recuperado correctamente'], 'status' => 200], 200);
     }
@@ -200,8 +205,14 @@ class PermissionController extends Controller
     public function grid(Request $request){
       $records = Role::select('*');
 
-      //if($request->inactive != 1)
-          //$records = $records->withTrash();
+      if($request->inactive == 1)
+          $records = $records->withTrashed();
+      
+      if($request->descripcion)
+        $records = $records->where('description', 'like', '%'.$request->descripcion.'%');
+
+      if($request->rol)
+        $records = $records->where('name', 'like', '%'.$request->rol.'%');
 
       $dataTable = Datatables::of($records);
       

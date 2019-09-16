@@ -13,7 +13,7 @@ class LoteRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+      return auth()->check();
     }
 
     /**
@@ -23,23 +23,23 @@ class LoteRequest extends FormRequest
      */
     public function rules()
     {
-        switch($this->method()){
-            case 'GET': 
-            case 'DELETE':{
-                return [];
-            }
-            case 'POST':{
-                return [
-                    'nombre' => 'required'
-                ];
-            }
-            case 'PUT':
-            case 'PATCH':{
-                return [
-                    'nombre' => 'required'
-                ];
-            }
-            default:break;
+      switch($this->method()){
+        case 'GET': 
+        case 'DELETE':{
+          return [];
         }
+        case 'POST':{
+          return [
+              'nombre' => 'required'
+          ];
+        }
+        case 'PUT':
+        case 'PATCH':{
+          return [
+              'nombre' => 'required'
+          ];
+        }
+        default:break;
+      }
     }
 }

@@ -1,6 +1,7 @@
 /*Selects options background*/
 select option {
   background-color: #32325d;
+  color: white;
 }
 
 .checkbox {
@@ -19,4 +20,36 @@ select option {
 	position: relative;
 	margin-top: 1rem;
 	text-align: center;
+}
+
+.daterangepicker, .daterangepicker table, 
+.daterangepicker .calendar-table {
+	background-image: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca);
+	border: #e14eca;
+	color: white;
+}
+
+.daterangepicker td.off, .daterangepicker td.off.in-range, 
+.daterangepicker td.off.start-date, .daterangepicker td.off.end-date {
+	background-color: #e14eca;
+	color: white;
+}
+
+.daterangepicker select {
+	background-color: #e14eca;
+	color: white;
+}
+
+.daterangepicker .calendar-table td:hover {
+	background-color: #525f7f;
+}
+
+.text-resultado {
+	text-align: center;
+	color: black !important;
+	font-size: 2.5rem;
+}
+
+.form-buscar {
+	font-size: 1.2rem;
 }

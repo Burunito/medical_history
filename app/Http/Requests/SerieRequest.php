@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoteRequest extends FormRequest
+class SerieRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,13 +30,17 @@ class LoteRequest extends FormRequest
             }
             case 'POST':{
                 return [
-                    'nombre' => 'required'
+                    'fecha_caducidad' => 'required',
+                    'cantidad' => 'required|numeric',
+                    'lote_id' => 'required|exists:lotes,id'
                 ];
             }
             case 'PUT':
             case 'PATCH':{
                 return [
-                    'nombre' => 'required'
+                    'fecha_caducidad' => 'required',
+                    'cantidad' => 'required|numeric',
+                    'lote_id' => 'required|exists:lotes,id'
                 ];
             }
             default:break;

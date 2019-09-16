@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserRequest extends FormRequest
 {

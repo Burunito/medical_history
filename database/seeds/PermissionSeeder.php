@@ -20,26 +20,33 @@ class PermissionSeeder extends Seeder
         'Eliminar-Rol',
         'Actualizar-Rol',
         'Mostrar-Rol',
+        'Recuperar-Rol',
         'Agregar-Usuario',
         'Eliminar-Usuario',
         'Actualizar-Usuario',
         'Mostrar-Usuario',
+        'Recuperar-Usuario',
         'Agregar-Permiso',
         'Eliminar-Permiso',
         'Actualizar-Permiso',
         'Mostrar-Permiso',
+        'Recuperar-Permiso',
         'Agregar-Lote',
         'Eliminar-Lote',
         'Actualizar-Lote',
         'Mostrar-Lote',
+        'Recuperar-Lote',
         'Agregar-Numero de Serie',
-        'Eliminar-Numero de Serie',
-        'Actualizar-Numero de Serie',
-        'Mostrar-Numero de Serie'
+        'Mostrar-Numero de Serie',
+        'Generar-Numero de Serie',
+        'Desactivar-Numero de Serie',
+        'Reactivar-Numero de Serie'
       ];
 
       $role = Role::where('name', 'admin')->first();
       foreach($permissions as $permission) {
+        if(Permission::where('action', $permission)->first())
+            continue;
         $record = new Permission();
         $record->action = $permission;
         $record->save();

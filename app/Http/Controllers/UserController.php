@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Models\Role;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -18,11 +19,15 @@ class UserController extends Controller
      */
     public function index(User $model)
     {
-        $data = [
-            'url' => 'user'
-        ];
+      $roles = Role::get();
 
-        return view('users.index', $data);
+      $data = [
+        'roles' => $roles,
+        'url' => 'user',
+        'permission' => 'Usuario'
+      ];
+
+      return view('users.index', $data);
     }
 
     /**
@@ -32,12 +37,15 @@ class UserController extends Controller
      */
     public function create()
     {  
-        $data = [
-            'method' => 'create',
-            'url' => 'user'
-        ];
+      $roles = Role::get();
+      $data = [
+        'method' => 'create',
+        'roles' => $roles,
+        'url' => 'user',
+        'permission' => 'Usuario'
+      ];
 
-        return view('users.create', $data);
+      return view('users.create', $data);
     }
 
     /**
@@ -62,14 +70,18 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $roles = Role::get()->merge(Role::where('id', $user->rol_id)->get());
+
         $data = [
-            'method' => 'edit',
-            'user' => $user,
-            'url' => 'user'
+          'method' => 'edit',
+          'roles' => $roles,
+          'user' => $user,
+          'permission' => 'Usuario',
+          'url' => 'user'
         ];
 
         if ($user->id == 1) {
-            return redirect()->route('user.index');
+          return redirect()->route('user.index')->withStatus(__('El administrador no puede ser modificado.'));
         }
 
         return view('users.edit', $data);
@@ -83,10 +95,14 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $roles = Role::get()->merge(Role::where('id', $user->rol_id)->get());
+
         $data = [
-            'method' => 'show',
-            'user' => $user,
-            'url' => 'user'
+          'method' => 'show',
+          'roles' => $roles,
+          'user' => $user,
+          'permission' => 'Usuario',
+          'url' => 'user'
         ];
 
         return view('users.edit', $data);
@@ -103,7 +119,7 @@ class UserController extends Controller
     {
         $hasPassword = $request->get('password');
         $user->update(
-            $request->merge(['password' => Hash::make($request->get('password'))])
+          $request->merge(['password' => Hash::make($request->get('password'))])
                 ->except([$hasPassword ? '' : 'password']
         ));
 
@@ -119,13 +135,26 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if($user->id != 1)
-            $user->delete();
+          $user->delete();
         else
-            return response()->json(['data' => ["msg" => 'No se puede eliminar el administrador'], 'status' => 400], 200);
+          return response()->json(['data' => ["msg" => 'No se puede eliminar el administrador'], 'status' => 400], 200);
 
         return response()->json(['data' => ["msg" => 'Eliminado correctamente'], 'status' => 200], 200);
     }
 
+    /**
+     * Remove the specified lote from storage
+     *
+     * @param  \App\Lote  $lote
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore(User  $user)
+    {
+      $user->withTrashed()->restore();
+
+      return response()->json(['data' => ["msg" => 'Recuperado correctamente'], 'status' => 200], 200);
+    }
+    
     /**
      * Gets all the elements to fill the grid
      * 
@@ -134,20 +163,30 @@ class UserController extends Controller
      */
     public function grid(Request $request){
       $records = User::select('users.*', 'roles.name as rol')
-                    ->join('roles', 'roles.id', 'users.role_id');
+                    ->join('roles', 'roles.id', 'users.role_id')
+                    ->orderBy('id', 'DESC');
 
-      //if($request->inactive != 1)
-          //$records = $records->withTrash();
+      if($request->inactive == 1)
+        $records = $records->withTrashed();
+
+      if($request->rol)
+        $records = $records->where('role_id', $request->rol);
+
+      if($request->nombre)
+        $records = $records->where('users.name', 'like', '%'.$request->nombre.'%');
+
+      if($request->correo)
+        $records = $records->where('email', 'like', '%'.$request->correo.'%');
 
       $dataTable = Datatables::of($records);
       
       return $dataTable->addColumn('actions', function($record){
-          $params = [
-              'record' => $record,
-              'url'=> 'user', 
-              'permission' => 'Usuario'
-          ];
-          return view('common.buttons', $params)->render();
+        $params = [
+          'record' => $record,
+          'url'=> 'user', 
+          'permission' => 'Usuario'
+        ];
+        return view('common.buttons', $params)->render();
       })
       ->escapeColumns([])
       ->make(true);

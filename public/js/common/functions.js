@@ -4,23 +4,24 @@ $(document).ready(function(){
 
     $("[data-toggle='tooltip']").tooltip();
 
-    $('.date-input').datetimepicker({
-        format: 'DD/MM/YYYY', 
-        locale: moment.locale(),
-        icons: {
-            time: "fa fa-clock-o",
-            date: "fa fa-calendar",
-            up: "fa fa-chevron-up",
-            down: "fa fa-chevron-down",
-            previous: 'fa fa-chevron-left',
-            next: 'fa fa-chevron-right',
-            today: 'fa fa-screenshot',
-            clear: 'fa fa-trash',
-            close: 'fa fa-remove'
-        }
+    $('.date-input').daterangepicker({
+      locale: config.daterangepicker.locale.es,
+      singleDatePicker: true,
+      showDropdowns: true,
+      minYear: 1901
     });
 
-    $(".select-input").select2();
+    $('.date-input').val('');
+
+    $('.clear-filters').click(function(){
+      clearFilters();
+    });
+
+    $('.dataTable-filters').click(function(){
+      dataTableFilter();
+    });
+    //$(".select-input").select2();
+
     if($('#form-method').val() == 'show') {
         $('form input, form select, form textarea').prop('disabled', true);
     };
@@ -44,23 +45,6 @@ function eliminar(recordId, source){
     });
 }
 
-function recuperar(recordId, source){
-    swal({
-        title: '¿Estás seguro?',
-        text:  'Si lo recuperas volverá a estar activo',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Confirmar',
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Cancelar',
-    }).then(function(result){
-        if(result.value){
-            recoverRegistry(source + '/' + recordId);
-        }
-    });
-}
-
 function removeRegistry(url){
     var request = this;
     $.ajax({
@@ -79,6 +63,43 @@ function removeRegistry(url){
         } 
     });
 }
+
+function recuperar(recordId, source){
+    swal({
+        title: '¿Estás seguro?',
+        text:  'Si lo recuperas volverá a estar activo',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Confirmar',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+    }).then(function(result){
+        if(result.value){
+            restoreRegistry(source + '/' + recordId + '/restore');
+        }
+    });
+}
+
+function restoreRegistry(url){
+    var request = this;
+    $.ajax({
+        type: 'PUT',
+        url,
+        data: {_token: getToken(), _method: 'PUT'},
+        success: function(response){
+            if(response.status == 200){
+                deletedRegistry(response.data);
+            }else{
+                $.notify({ message: response.data.msg },{ type: 'danger' });
+            }
+        },
+        error: function(response){
+            $.notify({ message: 'Ha ocurrido un error inesperado' },{ type: 'danger' });
+        } 
+    });
+}
+
 
 function ajaxRequest(url, data, type, callback){
     var request = this;
@@ -115,7 +136,7 @@ function deletedRegistry(data){
     $('.datatable').DataTable().draw();
 }
 
-function recoveredRegistry($data){
+function restoreedRegistry($data){
     $.notify({ message: data.msg ? data.msg : 'Recuperado con éxito' },{ type: 'success' });
     $('.datatable').DataTable().draw();
 }
@@ -123,4 +144,14 @@ function recoveredRegistry($data){
 function ajaxResponse($data){
     $.notify({ message: data.msg ? data.msg : 'Operación completada con éxito' },{ type: 'success' });
     $('.datatable').DataTable().draw();
+}
+
+function clearFilters(){
+  $('form input, form select').val('');
+  $("input[type='checkbox']").prop("checked", false);
+  $('.datatable').DataTable().draw();
+}
+
+function dataTableFilter(){
+  $('.datatable').DataTable().draw();
 }

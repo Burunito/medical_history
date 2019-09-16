@@ -19,7 +19,9 @@
         <!-- CSS -->
         <link href="{{ asset('black') }}/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
         <link href="{{ asset('black') }}/css/theme.css" rel="stylesheet" />
+        <link href="{{ asset('assets/vendor/daterangepicker/daterangepicker.css') }}" rel="stylesheet" />
         <link href="{{ asset('/css/app.css') }}" rel="stylesheet" />
+
     </head>
     <body class="{{ $class ?? '' }}">
         @auth()
@@ -67,6 +69,7 @@
         <script src="{{ asset('assets/vendor/select2/select2.min.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendor/sweetalert/sweetalert2.all.js') }}" type="text/javascript"></script>
         <script src="{{ asset('assets/vendor/filestyle2/bootstrap-filestyle.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('assets/vendor/daterangepicker/daterangepicker.js') }}" type="text/javascript"></script>
         @yield('js')
     </body>
 </html>

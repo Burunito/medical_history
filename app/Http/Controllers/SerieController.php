@@ -3,132 +3,161 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Serie;
 use App\Models\Lote;
-use App\Http\Requests\LoteRequest;
+use App\Http\Requests\SerieRequest;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Datatables;
+use Carbon\Carbon;
+use Auth;
 
-class LoteController extends Controller
+class SerieController extends Controller
 {
+    protected $string_length = 5;
     /**
-     * Display a listing of the lote
+     * Display a listing of the serie
      *
-     * @param  \App\Lote  $model
+     * @param  \App\Serie  $model
      * @return \Illuminate\View\View
      */
-    public function index(Lote $model)
+    public function index(Serie $model)
     {
+      $lotes = Lote::get();
       $data = [
-        'permission' => 'Lote'
+        'lotes' => $lotes,
+        'permission' => 'Numero de Serie'
       ];
 
-      return view('lote.index', $data);
+      return view('serie.index', $data);
     }
 
     /**
-     * Show the form for creating a new lote
+     * Show the form for creating a new serie
      *
      * @return \Illuminate\View\View
      */
     public function create()
     {
+      $lotes = Lote::get();
       $data = [
+        'lotes' => $lotes,
         'method' => 'create',
-        'permission' => 'Lote',
-        'url' => 'lote'
+        'permission' => 'Numero de Serie',
+        'url' => 'serie'
       ];
 
-      return view('lote.create', $data);
+      return view('serie.create', $data);
     }
 
     /**
-     * Store a newly created lote in storage
+     * Store a newly created serie in storage
      *
-     * @param  \App\Http\Requests\LoteRequest  $request
-     * @param  \App\Lote  $model
+     * @param  \App\Http\Requests\SerieRequest  $request
+     * @param  \App\Serie  $model
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(LoteRequest $request, Lote $model)
+    public function store(SerieRequest $request, Serie $model)
     {
-    	$model->fill($request->all());
-    	$model->save();
+      set_time_limit(500);
+      $data = $request->all();
+      $fecha_caducidad = Carbon::createFromFormat('d/m/Y', $data['fecha_caducidad'])->format('Y-m-d');
+      for($i=0; $i < $data['cantidad']; $i++) { 
+        do{
+          $serie = str_random($this->string_length);
+          $diferente = Serie::where('serie', $serie)
+                            ->where('fecha_caducidad', $fecha_caducidad)
+                            ->where('lote_id', $data['lote_id'])
+                            ->first();
+        }while($diferente);
 
-      return redirect('/lote')->withStatus(__('Creado con éxito.'));
+        $num_serie = new Serie();
+      	$num_serie->serie = $serie;
+        $num_serie->usuario_id = Auth::id();
+        $num_serie->lote_id = $data['lote_id'];
+        $num_serie->fecha_caducidad = $fecha_caducidad;
+      	$num_serie->save();
+      }
+
+      return redirect('/serie')->withStatus(__('Creados con éxito.'));
     }
 
     /**
-     * Show the form for editing the specified lote
+     * Show the form for editing the specified serie
      *
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return \Illuminate\View\View
      */
-    public function edit(Lote $lote)
+    public function edit(Serie $serie)
     {  
       $data = [
         'method' => 'edit',
-        'record' => $lote,
-        'permission' => 'Lote',
-        'url' => '/lote/'.$lote->id
+        'record' => $serie,
+        'permission' => 'Numero de Serie',
+        'url' => '/serie/'.$serie->id
       ];
 
-      return view('lote.create', $data);
+      return view('serie.create', $data);
     }
 
     /**
-     * Show the form for editing the specified lote
+     * Show the form for editing the specified serie
      *
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return \Illuminate\View\View
      */
-    public function show(Lote $lote)
+    public function show(Serie $serie)
     {  
       $data = [
         'method' => 'show',
-        'record' => $lote,
-        'permission' => 'Lote',
-        'url' => '/lote'
+        'record' => $serie,
+        'permission' => 'Numero de Serie',
+        'url' => '/serie'
       ];
 
-      return view('lote.create', $data);
+      return view('serie.create', $data);
     }
 
     /**
-     * Update the specified lote in storage
+     * Update the specified serie in storage
      *
-     * @param  \App\Http\Requests\LoteRequest  $request
-     * @param  \App\Lote  $lote
+     * @param  \App\Http\Requests\SerieRequest  $request
+     * @param  \App\Serie  $serie
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(LoteRequest $request, Lote $lote)
+    public function update(SerieRequest $request, Serie $serie)
     {
-      $lote->fill($request->all());
-      $lote->update();
+      $serie->fill($request->all());
+      $serie->update();
 
-      return redirect('/lote')->withStatus(__('Actualizado con éxito.'));
+      return redirect('/serie')->withStatus(__('Actualizado con éxito.'));
     }
 
     /**
-     * Remove the specified lote from storage
+     * Remove the specified serie from storage
      *
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Lote  $lote)
+    public function destroy($id)
     {
-      $lote->delete();
+      $serie = Serie::find($id);
+      $serie->activo = 0;
+      $serie->update();
 
       return response()->json(['data' => ["msg" => 'Eliminado correctamente'], 'status' => 200], 200);
     }
 
     /**
-     * Remove the specified lote from storage
+     * Remove the specified serie from storage
      *
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function recover(Lote  $lote)
+    public function restore($id)
     {
-      $lote->restore();
+      $serie = Serie::find($id);
+      $serie->activo = 1;
+      $serie->update();
 
       return response()->json(['data' => ["msg" => 'Recuperado correctamente'], 'status' => 200], 200);
     }
@@ -136,24 +165,41 @@ class LoteController extends Controller
     /**
      * Gets all the elements to fill the grid
      * 
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return DatatableJson
      */
     public function grid(Request $request){
-      $records = Lote::select('*');
+      $records = Serie::select('series.*', 'lotes.nombre as lote', 'users.name as usuario')
+                      ->selectRaw('DATE_FORMAT(series.created_at, "%d/%m/%Y") as fecha')
+                      ->selectRaw('DATE_FORMAT(series.fecha_caducidad, "%d/%m/%Y") as fecha_caducidad_format')
+                      ->join('lotes', 'lotes.id', 'series.lote_id')
+                      ->join('users', 'users.id', 'series.usuario_id')
+                      ->orderBy('series.id', 'DESC');
 
-      //if($request->inactive != 1)
-          //$records = $records->withTrash();
+      if($request->fecha)
+        $records = $records->having('fecha', $request->fecha);
+
+      if($request->fecha_caducidad)
+        $records = $records->having('fecha_caducidad_format', $request->fecha_caducidad);
+
+      if($request->lote)
+        $records = $records->where('lote_id', $request->lote);
+
+      if($request->serie)
+        $records = $records->where('serie', 'like', '%'.$request->serie.'%');
 
       $dataTable = Datatables::of($records);
       
       return $dataTable->addColumn('actions', function($record){
-          $params = [
-              'record' => $record,
-              'url'=> 'lote', 
-              'permission' => 'Lote'
-          ];
-          return view('common.buttons', $params)->render();
+        $params = [
+          'record' => $record,
+          'url'=> 'serie', 
+          'permission' => 'Numero de Serie'
+        ];
+        return view('serie.buttons', $params)->render();
+      })
+      ->editColumn('activo', function($record){
+        return $record->activo ? 'Si' : 'No';
       })
       ->escapeColumns([])
       ->make(true);
@@ -162,27 +208,27 @@ class LoteController extends Controller
     /**
      * Gets all the elements with filters
      *
-     * @param  \App\Lote  $lote
+     * @param  \App\Serie  $serie
      * @return Collection Data
      */
     public function filter(Request $request){       
-      $records = Lote::select('*');
+      $records = Serie::select('*');
       $filters = $request->all();
       foreach($filters as $filter) {
-          switch ($filter->type) {
-              case 'gt':
-                  $records->where($filter->field, '>', $filter->value);
-                  break;
-              case 'lt':
-                  $records->where($filter->field, '<', $filter->value);
-                  break;
-              case 'eq':
-                  $records->where($filter->field, '=', $filter->value);
-                  break;
-              case 'like':
-                  $records->where($filter->field, 'like', '%'.$filter->value.'%');
-                  break;
-          }
+        switch ($filter->type) {
+          case 'gt':
+            $records->where($filter->field, '>', $filter->value);
+            break;
+          case 'lt':
+            $records->where($filter->field, '<', $filter->value);
+            break;
+          case 'eq':
+            $records->where($filter->field, '=', $filter->value);
+            break;
+          case 'like':
+            $records->where($filter->field, 'like', '%'.$filter->value.'%');
+            break;
+        }
       }
 
       $records = $records->get();

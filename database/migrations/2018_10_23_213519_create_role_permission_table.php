@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CreateRolePermissionTable extends Migration
 {
+    use SoftDeletes;
     /**
      * Run the migrations.
      *
@@ -18,6 +20,7 @@ class CreateRolePermissionTable extends Migration
             $table->integer('permission_id')->unsigned();
             $table->integer('role_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::table('role_permission', function (Blueprint $table) {

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['page' => __('Roles'), 'pageSlug' => 'users'])
+@extends('layouts.app', ['page' => __('Roles'), 'pageSlug' => 'permission'])
 
 @section('content')
     <div class="container-fluid mt--7">
@@ -40,16 +40,18 @@
                                     </div>
                                   </div>
                                 </div>
-                                <h1 class="text-center">Permisos</h1>
-                                <input type="checkbox" class="checkbox" id="checkAll">Seleccionar todos los permisos<br>
+                                <h1 class="text-center">{{ __('Permisos') }}</h1>
+                                <input type="checkbox" class="checkbox" id="checkAll">{{ __('Seleccionar todos los permisos') }}<br>
                                 <div class="row">
                                 @foreach($permisos as $permiso_grupo => $grupo)
                                     <div class="form-group col-12 col-md-3">
                                       <h2 class="text-center">{{ $permiso_grupo }}</h2>
                                       <div class="form-group grupo-permisos">
                                         <div class="col-12">
-                                          <label>Acciones</label> - 
-                                          <input type="checkbox" class="checkbox checkgroup" id="check{{ $permiso_grupo }}">Seleccionar todo el grupo
+                                          <input type="checkbox" class="checkbox checkgroup" id="check{{ $permiso_grupo }}">{{ __('Seleccionar todo el grupo') }}
+                                        </div>
+                                        <div class="col-12">
+                                          <label>{{ __('Acciones') }}</label>
                                         </div>
                                         @foreach($grupo as $permiso)
                                               <div class="col-12">
@@ -60,17 +62,20 @@
                                                 @else
                                                   {{ old('permisos[$permiso->id]') ? 'checked' : ''}}
                                                 @endif
-                                                >{{$permiso_nombre[0].' '.$permiso_nombre[1]}}
+                                                >{{ __($permiso_nombre[0]) }} {{ __($permiso_nombre[1]) }}
                                             </div>
                                         @endforeach
                                       </div>
                                     </div>
                                 @endforeach
                                 </div>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-success mt-4">{{ __('Guardar') }}</button>
-                                </div>
+                          <div class="form-group col-12">
+                            @if($method != 'show')
+                            <div class="text-center">
+                              <button type="submit" class="btn btn-success mt-4">{{ __('Guardar') }}</button>
                             </div>
+                            @endif
+                          </div>
                         </form>
                     </div>
                 </div>
