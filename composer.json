@@ -9,7 +9,7 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "doctrine/dbal": "2.8",
         "fideloper/proxy": "^4.0",
-        "guzzlehttp/guzzle": "6.3",
+        "guzzlehttp/guzzle": "6.5.8",
         "laravel-frontend-presets/black-dashboard": "^1.0",
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.4",
